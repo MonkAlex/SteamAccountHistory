@@ -38,19 +38,21 @@ namespace SteamAccountHistory
             return Client;
         }
 
-        public static IEnumerable<SteamApp> GetOnlyGames(string[] allPackages)
+        public static List<SteamApp> GetApps(string[] allPackages)
         {
-            var games = Serializer<List<SteamApp>>.Load(".\\games") ?? new List<SteamApp>(Enumerable.Empty<SteamApp>());
-            foreach (var packageGames in allPackages.Select(GetGames).Where(packageGames => packageGames != null))
-                games.AddRange(packageGames);
-            Serializer<List<SteamApp>>.Save(".\\games", games);
-            games = games.Distinct().ToList();
-            Serializer<List<SteamApp>>.Save(".\\distinct_games", games);
+            var apps = Library.Load();
+            allPackages = allPackages.Where(p => !apps.Any(g => g.PackageName == p)).ToArray();
+            foreach (var packageGames in allPackages
+                .Select(GetApps)
+                .Where(packageGames => packageGames != null)
+                .Select(packageGames => packageGames.Except(apps)))
+                apps.AddRange(packageGames);
 
-            return games;
+            apps = apps.Distinct().ToList();
+            return apps;
         }
 
-        public static IEnumerable<SteamApp> GetGames(string packageName)
+        public static List<SteamApp> GetApps(string packageName)
         {
             var apps = new List<SteamApp>();
             var doc = new HtmlDocument();
@@ -62,13 +64,20 @@ namespace SteamAccountHistory
 
             for (var i = 0; i < type.Count; i += 4)
             {
-                var subId = Convert.ToInt32(type[i].InnerText);
+                var subId = Convert.ToUInt64(type[i].InnerText);
                 var subType = ParseEnum<AppType>(type[i + 1].InnerText);
                 var subName = type[i + 2].InnerText;
-                apps.Add(new SteamApp { Type = subType, AppId = subId, PackageName = packageName, Name = subName });
+                apps.Add(new SteamApp 
+                { 
+                    Type = subType,
+                    AppId = subId,
+                    PackageName = packageName,
+                    Name = subName,
+                    Status = (subType == AppType.Game) ? SteamApp.AppStatus.Planned : SteamApp.AppStatus.Ignored
+                });
             }
 
-            return apps.Where(a => a.Type == AppType.Game);
+            return apps;
         }
 
         private static string GetPackagePage(string packageName)

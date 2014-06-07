@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using HtmlAgilityPack;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 
 namespace SteamAccountHistory
 {
@@ -29,6 +25,7 @@ namespace SteamAccountHistory
             if (block != null)
                 packages.AddRange(block.Select(node => node.InnerText));
 
+            packages.Reverse();
             return packages.ToArray();
         }
     }

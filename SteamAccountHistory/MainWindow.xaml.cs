@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SteamAccountHistory
 {
@@ -23,19 +11,47 @@ namespace SteamAccountHistory
         public MainWindow()
         {
             InitializeComponent();
+            Refresh();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Refresh()
         {
-            var allPackages = LoadAccount.GetPackages();
-            var onlyGames = SteamDB.GetOnlyGames(allPackages);
-            onlyGames.Count();
+            this.ListBox.ItemsSource = Library.VisibleGames;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Load_Click(object sender, RoutedEventArgs e)
         {
-            var is62 = SteamDB.GetGames("Steam Sub 62");
-            var comp = is62.Count();
+            Library.AllApps = SteamDB.GetApps(LoadAccount.GetPackages());
+            Refresh();
+        }
+
+        private void Ignore_Click(object sender, RoutedEventArgs e)
+        {
+            Library.ChangeStatus(SteamApp.AppStatus.Ignored, this.ListBox.SelectedItems);
+            Refresh();
+        }
+
+        private void Active_Click(object sender, RoutedEventArgs e)
+        {
+            Library.ChangeStatus(SteamApp.AppStatus.Active, this.ListBox.SelectedItems);
+            Refresh();
+        }
+
+        private void Complete_Click(object sender, RoutedEventArgs e)
+        {
+            Library.ChangeStatus(SteamApp.AppStatus.Completed, this.ListBox.SelectedItems);
+            Refresh();
+        }
+
+        private void Planned_Click(object sender, RoutedEventArgs e)
+        {
+            Library.ChangeStatus(SteamApp.AppStatus.Planned, this.ListBox.SelectedItems);
+            Refresh();
+        }
+
+        private void MainWindow_OnClosed(object sender, EventArgs e)
+        {
+            Library.Save();
         }
     }
 }
