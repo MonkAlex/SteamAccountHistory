@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAccountHistory", "SteamAccountHistory\SteamAccountHistory.csproj", "{F0283D0C-7B48-4F49-8CC3-8BE0E1E8B441}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAccountHistory", "SteamAccountHistory.csproj", "{B980BF6B-7151-474B-99F4-2F101625C70E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F0283D0C-7B48-4F49-8CC3-8BE0E1E8B441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0283D0C-7B48-4F49-8CC3-8BE0E1E8B441}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0283D0C-7B48-4F49-8CC3-8BE0E1E8B441}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0283D0C-7B48-4F49-8CC3-8BE0E1E8B441}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B980BF6B-7151-474B-99F4-2F101625C70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B980BF6B-7151-474B-99F4-2F101625C70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B980BF6B-7151-474B-99F4-2F101625C70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B980BF6B-7151-474B-99F4-2F101625C70E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12993513-E02A-4A4C-A006-5BB96B21AA12}
 	EndGlobalSection
 EndGlobal

@@ -5,12 +5,12 @@
 *.suo
 *.user
 *.sln.docstates
+/.vs
 
 # Build results
 
 [Dd]ebug/
 [Rr]elease/
-x64/
 build/
 [Bb]in/
 [Oo]bj/
@@ -62,6 +62,10 @@ ipch/
 # Guidance Automation Toolkit
 *.gpState
 
+#IDEA
+/.idea
+*.sln.iml
+
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
@@ -97,7 +101,7 @@ publish/
 
 # NuGet Packages Directory
 ## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
+packages/
 
 # Windows Azure Build Output
 csx
