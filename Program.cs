@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -11,49 +12,22 @@ namespace SteamAccountHistory
   {
     static async Task Main(string[] args)
     {
-      const string PackageStart = "License packageID";
-      const string PackagePartPrefix = " - ";
-      const string State = " - State";
-      const string Apps = " - Apps";
-      const string Depots = " - Depots";
-      var file = await File.ReadAllLinesAsync("licenses.txt");
-      var user = string.Empty;
-
-      List<Package> packages = new List<Package>();
-      for (var index = 0; index < file.Length; index++)
-      {
-        var line = file[index];
-        if (line.StartsWith("Logging in user"))
-          user = Regex.Match(line, "Logging in user '(.*?)' to Steam Public", RegexOptions.Compiled).Groups[1].Value;
-
-        if (!string.IsNullOrWhiteSpace(user) && (line.StartsWith(PackageStart) || (line.StartsWith(PackagePartPrefix))))
-        {
-          if (line.StartsWith(PackageStart))
-            packages.Add(Package.Parse(line));
-
-          else if (line.StartsWith(State))
-            packages.Last().State = SteamAccountHistory.State.Parse(line);
-
-          else if (line.StartsWith(Apps))
-            packages.Last().Apps = SteamAccountHistory.Apps.Parse<Apps>(line);
-
-          else if (line.StartsWith(Depots))
-            packages.Last().Depots = SteamAccountHistory.Depots.Parse<Depots>(line);
-
-          else
-            throw new Exception($"Line {line} not parsed.");
-        }
-        else
-        {
-          Console.WriteLine(line);
-        }
-      }
-
+      var licenseParser = new LicensesPrintCommandParser("licenses.txt");
+      var packages = await licenseParser.GetPackages();
       packages = packages.OrderBy(p => p.State.Purchased).ToList();
-      foreach (var package in packages)
+
+      var notParsedAllApps = packages.Where(p => !p.Apps.FullParsed).ToList();
+
+      var packageBuilder = new StringBuilder();
+      packageBuilder.AppendLine("@NoPromptForPassword 1");
+      packageBuilder.AppendLine($"login {licenseParser.UserLogin}");
+      foreach (var package in notParsedAllApps)
       {
-        Console.WriteLine(package.State.Purchased);
+        packageBuilder.AppendLine($"package_info_print {package.Id}");
       }
+
+      packageBuilder.AppendLine("quit");
+      File.WriteAllText("get_packages.rsc", packageBuilder.ToString());
     }
   }
 }
