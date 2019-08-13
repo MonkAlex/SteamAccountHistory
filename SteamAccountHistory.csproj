@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Gameloop.Vdf.JsonConverter" Version="0.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="licenses.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

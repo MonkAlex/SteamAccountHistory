@@ -28,6 +28,11 @@ namespace SteamAccountHistory
 
       packageBuilder.AppendLine("quit");
       File.WriteAllText("get_packages.rsc", packageBuilder.ToString());
+
+      var packageInfoParser = new PackageInfoPrintCommandParser("packages.txt");
+      var filledPackages = await packageInfoParser.FillPackages(notParsedAllApps);
+
+      var notParsed = packages.Where(p => p.Apps.FullParsed == false).ToList();
     }
   }
 }
