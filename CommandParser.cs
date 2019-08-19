@@ -227,25 +227,28 @@ namespace SteamAccountHistory
     {
       if (currentAppContent.Any())
       {
-        try
+        var vdf = string.Join(Environment.NewLine, currentAppContent.Skip(1));
+        var vProperty = VdfConvert.Deserialize(vdf);
+        var vdfJsonConversionSettings = new VdfJsonConversionSettings()
         {
-          var vdf = string.Join(Environment.NewLine, currentAppContent.Skip(1));
-          var vProperty = VdfConvert.Deserialize(vdf);
-          var jProperty = vProperty.ToJson().Children().Single();
-          if (jProperty.HasValues)
-          {
-            var gameId = (jProperty["common"]["gameid"] as JValue).Value<ulong>();
-            var findApp = packages.SelectMany(p => p.Apps.List).Where(a => a.Id == gameId).ToList();
-            foreach (var app in findApp)
-            {
-              app.Body = jProperty;
-            }
-          }
-        }
-        catch (Exception e)
+          // Merge data with duplicate name. Registry or install parameters. Registry merged, install parameters can replace sometimes.
+          ObjectDuplicateKeyHandling = DuplicateKeyHandling.Merge
+        };
+        var jProperty = vProperty.ToJson(vdfJsonConversionSettings).Children().Single();
+        if (jProperty.HasValues)
         {
-          Console.WriteLine(e);
+          FillAppsBody(packages, jProperty);
         }
+      }
+    }
+
+    private static void FillAppsBody(IReadOnlyCollection<Package> packages, JToken jProperty)
+    {
+      var gameId = (jProperty["common"]["gameid"] as JValue).Value<ulong>();
+      var findApp = packages.SelectMany(p => p.Apps.List).Where(a => a.Id == gameId).ToList();
+      foreach (var app in findApp)
+      {
+        app.Body = jProperty;
       }
     }
 

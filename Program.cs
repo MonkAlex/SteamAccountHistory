@@ -24,7 +24,7 @@ namespace SteamAccountHistory
       await appInfoParser.GenerateScript(packages, licenseParser.UserLogin);
       await appInfoParser.FillPackages(packages);
 
-      var apps = packages.SelectMany(p => p.Apps.List).GroupBy(a => a.Type);
+      var apps = packages.SelectMany(p => p.Apps.List).Distinct().GroupBy(a => a.Type);
       foreach (var app in apps)
       {
         Console.WriteLine(app.Key);
