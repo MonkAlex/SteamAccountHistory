@@ -1,4 +1,7 @@
 ﻿namespace SteamAccountHistory
 {
-  public class Apps : BaseIdList { }
+  public class Apps : BaseIdList<App>
+  {
+
+  }
 }

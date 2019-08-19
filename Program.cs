@@ -16,23 +16,19 @@ namespace SteamAccountHistory
       var packages = await licenseParser.GetPackages();
       packages = packages.OrderBy(p => p.State.Purchased).ToList();
 
-      var notParsedAllApps = packages.Where(p => !p.Apps.FullParsed).ToList();
-
-      var packageBuilder = new StringBuilder();
-      packageBuilder.AppendLine("@NoPromptForPassword 1");
-      packageBuilder.AppendLine($"login {licenseParser.UserLogin}");
-      foreach (var package in notParsedAllApps)
-      {
-        packageBuilder.AppendLine($"package_info_print {package.Id}");
-      }
-
-      packageBuilder.AppendLine("quit");
-      File.WriteAllText("get_packages.rsc", packageBuilder.ToString());
-
       var packageInfoParser = new PackageInfoPrintCommandParser("packages.txt");
-      var filledPackages = await packageInfoParser.FillPackages(notParsedAllApps);
+      await packageInfoParser.GenerateScript(packages, licenseParser.UserLogin);
+      await packageInfoParser.FillPackages(packages);
 
-      var notParsed = packages.Where(p => p.Apps.FullParsed == false).ToList();
+      var appInfoParser = new AppInfoPrintCommandParser("apps.txt");
+      await appInfoParser.GenerateScript(packages, licenseParser.UserLogin);
+      await appInfoParser.FillPackages(packages);
+
+      var apps = packages.SelectMany(p => p.Apps.List).GroupBy(a => a.Type);
+      foreach (var app in apps)
+      {
+        Console.WriteLine(app.Key);
+      }
     }
   }
 }
